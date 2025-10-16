@@ -23,11 +23,9 @@
  * @type {TodoItem[]}
  */
 const todoList = [
-  // Hér er hægt að fjarlægja komment til að hafa nokkur verkefni í byrjun
-  // Ekki skila með þessu inni.
-  // { text: "Læra CSS", finished: true },
-  // { text: "Læra JavaScript", finished: false },
-  // { text: "Búa til verkefnalista", finished: false },
+
+
+
 ];
 
 //------------------------------------------------------------------------------
@@ -39,15 +37,29 @@ const todoList = [
  * @returns {number} Ný stærð verkefnalistans.
  */
 function createTodoItem(input) {
-  /* TODO útfæra */
+  if (!isNonEmptyString(input)) {
+    console.warn("createTodoItem: Býst við streng. Fékk hinsvegar:", input);
+    alert("Ólöglegt inntak: Gefðu upp gildan streng.");
+    return todoList.length;
+  }
+  const item = { text: String(input).trim(), finished: false };
+  const len = todoList.push(item);
+  console.log(`Bætti við: "${item.text}". (heild: ${len})`);
+  return len;
 }
 
 /**
  * Birtir verkefnalistann í console.
  */
 function list() {
-  /* TODO útfæra */
-}
+if (todoList.length === 0) {
+    console.log("Tómur listi.");
+    return;
+  }
+  console.log("Verkefnalisti:");
+  for (let i = 0; i < todoList.length; i++) {
+    printItem(i, todoList[i]);
+  }}
 
 /**
  * Breytir stöðu verkefnis í „klárað“ eða „óklárað“.
@@ -56,26 +68,102 @@ function list() {
  * @returns {boolean} - `true` ef breyting tókst, annars `false`.
  */
 function toggleFinished(index) {
-  /* TODO útfæra */
+const idx = Number.isInteger(index) ? index : toInt(index);
+
+  if (!Number.isInteger(idx)) {
+    alert("Ólögleg tala: verður að vera heiltala.");
+    return false;
+  }
+  if (!isValidIndex(idx)) {
+    alert(`Ólögleg tala: veldu 0..${Math.max(0, todoList.length - 1)}.`);
+    return false;
+  }
+
+  const it = todoList[idx];
+  it.finished = !it.finished;
+  console.log(`Verkefni #${idx} er nú ${it.finished ? "KLÁRAÐ" : "ÓKLÁRAÐ"}: "${it.text}"`);
+  return true;
 }
 
 /**
  * Skrifar út stöðu verkefnalistans í console.
  */
 function stats() {
-  /* TODO útfæra */
-}
+function stats() {
+  const finished = countFinished();
+  const total = todoList.length;
+  const unfinished = total - finished;
+  console.log(`Staða: Öll verkefni ${total}, kláruð ${finished}, ókláruð ${unfinished}.`);
+}}
 
 /**
  * Tæma verkefnalistann.
  */
 function clear() {
-  /* TODO útfæra */
+  if (todoList.length === 0) {
+    console.log("clear: Listinn er tómur – ekkert  til að hreinsa.");
+    return;
+  }
+  const finishedCount = countFinished();
+  if (finishedCount === 0) {
+    console.log("clear: Engin kláruð verkefni – ekkert að hreinsa.");
+    return;
+  }
+  if (!confirm(`Eyða ${finishedCount} verkefnum`)) {
+    console.log("clear: Hætt við.");
+    return;
+  }
+  
+  let kept = 0;
+  for (let i = 0; i < todoList.length; i++) {
+    if (!todoList[i].finished) todoList[kept++] = todoList[i];
+  }
+  const removed = todoList.length - kept;
+  todoList.length = kept;
+
+  console.log(`clear: Eyddi ${removed} verkefni. Eftir eru ${todoList.length}.`);
 }
 
 /**
  * Leiðbeint ferli til að bæta verkefnum við, sýnir síðan lista og stöðu.
  */
 function start() {
-  /* TODO útfæra */
+while (true) {
+    const input = prompt("Sláðu inn texta fyrir nýtt verkefni (Cancel til að hætta):");
+    if (input === null) break; // Cancel
+    if (!isNonEmptyString(input)) {
+      alert("Verkefni verður að hafa texta (ekki tómur strengur).");
+      continue;
+    }
+    createTodoItem(input);
+  }
+  list();
+  stats();}
+
+/** @param {strengur} - Athugar hvort strengur se til og lengri en 1 */
+function isNonEmptyString(strengur) {
+  return typeof v === "string" && v.trim().length > 0;
+}
+
+/** Reynir að lesa heiltölu (án brota). Skilar `number` eða `null`. */
+function toInt(v) {
+  const n = Number(v);
+  return Number.isInteger(n) ? n : null;
+}
+
+/** Athugar hvort index sé löglegt fyrir núverandi lista. */
+function isValidIndex(idx) {
+  return Number.isInteger(idx) && idx >= 0 && idx < todoList.length;
+}
+
+/** Prentar eina línu fyrir verkefni. */
+function printItem(i, it) {
+  console.log(`${i}. ${it.finished ? "[x]" : "[ ]"} ${it.text}`);
+}
+
+/** Telur kláruð verkefni. */
+function countFinished() {
+  let n = 0;
+  for (const it of todoList) if (it.finished) n++;
+  return n;
 }
