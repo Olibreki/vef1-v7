@@ -89,12 +89,11 @@ const idx = Number.isInteger(index) ? index : toInt(index);
  * Skrifar út stöðu verkefnalistans í console.
  */
 function stats() {
-function stats() {
   const finished = countFinished();
   const total = todoList.length;
   const unfinished = total - finished;
   console.log(`Staða: Öll verkefni ${total}, kláruð ${finished}, ókláruð ${unfinished}.`);
-}}
+}
 
 /**
  * Tæma verkefnalistann.
@@ -142,7 +141,7 @@ while (true) {
 
 /** @param {strengur} - Athugar hvort strengur se til og lengri en 1 */
 function isNonEmptyString(strengur) {
-  return typeof v === "string" && v.trim().length > 0;
+  return typeof strengur === "string" && strengur.trim().length > 0;
 }
 
 /** Reynir að lesa heiltölu (án brota). Skilar `number` eða `null`. */
